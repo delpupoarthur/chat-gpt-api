@@ -13,7 +13,25 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from urllib.parse import urlparse, parse_qs
 
-
+prompt = "Por favor, realize uma análise profunda e detalhada "\
+ "do sentimento expresso na frase delimitada por {}, "\
+ "classificando-a como positiva, negativa ou neutra. "\
+ "Identifique e liste os sentimentos específicos presentes, "\
+ "em sua forma mais simples e direta (palavra primitiva)" \
+ "tanto explícitos quanto implícitos, e avalie a intensidade de cada sentimento de 0 (zero) a 100. "\
+ "Indique quais palavras-chave na sentença contribuíram " \
+ "para os sentimentos identificados. "\
+ "Em seguida, sugira possíveis razões para esses sentimentos "\
+ "com base no contexto da frase. Por fim, explique como você chegou " \
+ "a essas conclusões. Retorne todas essas informações " \
+ "no seguinte formato de um objeto JSON: " \
+ "{" \
+    "'classe': 'classe'," \
+    "'sentimentos': {'sentimento': 'intensidade'}," \
+    "'contribuicoes': {'palavra/frase': 'sentimento associado'}," \
+    "'razoes_possiveis': ['string']," \
+    "'explicacao_modelo': 'string'" \
+"}"
 
 
 
@@ -47,7 +65,7 @@ def ask_gpt(question):
             actions = ActionChains(browser)
             # Clica no botão
             actions.click(input_field).perform()
-            input_field.send_keys(question)
+            input_field.send_keys(prompt + question)
             # Clica no botão de enviar
             submit_button = browser.find_element(By.XPATH , '//button[@data-testid="send-button"]')
             time.sleep(1)  # Espera 5 segundos para a resposta ser gerada
@@ -91,13 +109,5 @@ def run(server_class=HTTPServer, handler_class=RequestHandler, port=8000):
     print(f'Starting server on port {port}...')
     httpd.serve_forever()
     
-    
-    
-    
-
 if __name__ == "__main__":
     run()
-
-
-
-
